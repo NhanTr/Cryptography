@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cryptography Toolkit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Cryptography Toolkit</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('symmetric')">Symmetric</button>
+            <button class="tab-btn" onclick="openTab('asymmetric')">Asymmetric (RSA)</button>
+            <button class="tab-btn" onclick="openTab('hash')">Hash Functions</button>
+        </div>
+
+        <div id="symmetric" class="tab-content active">
+            <h3>Mã hóa Đối xứng</h3>
+            <select id="sym-algo">
+                <option value="AES">AES</option>
+                <option value="DES">DES</option>
+                <option value="3DES">3DES</option>
+            </select>
+            <textarea id="sym-input" placeholder="Nhập Plaintext hoặc Ciphertext..."></textarea>
+            
+            <div class="key-group">
+                <input type="text" id="sym-key" placeholder="Nhập Secret Key">
+                <button onclick="generateKey()">Auto-generate</button>
+            </div>
+
+            <div class="actions">
+                <button class="btn-enc" onclick="handleAction('encrypt-sym')">Encrypt</button>
+                <button class="btn-dec" onclick="handleAction('decrypt-sym')">Decrypt</button>
+            </div>
+        </div>
+
+        <div id="asymmetric" class="tab-content">
+            <h3>Mã hóa Bất đối xứng (RSA)</h3>
+            <button class="btn-gen" onclick="handleAction('gen-rsa')">Generate Key Pair</button>
+            <div class="key-display">
+                <textarea id="pub-key" placeholder="Public Key" readonly></textarea>
+                <textarea id="priv-key" placeholder="Private Key" readonly></textarea>
+            </div>
+            <textarea id="asym-input" placeholder="Nhập dữ liệu..."></textarea>
+            <div class="actions">
+                <button class="btn-enc" onclick="handleAction('encrypt-asym')">Encrypt</button>
+                <button class="btn-dec" onclick="handleAction('decrypt-asym')">Decrypt</button>
+            </div>
+        </div>
+
+        <div id="hash" class="tab-content">
+            <h3>Hàm Băm (Hash)</h3>
+            <select id="hash-algo">
+                <option value="MD5">MD5</option>
+                <option value="SHA-256">SHA-256</option>
+            </select>
+            <textarea id="hash-input" placeholder="Nhập chuỗi văn bản..."></textarea>
+            <button class="btn-hash" onclick="handleAction('hash')">Calculate Digest</button>
+        </div>
+
+        <hr>
+        <div class="result-area">
+            <h4>Kết quả:</h4>
+            <div id="result-output" class="output-box">...</div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
