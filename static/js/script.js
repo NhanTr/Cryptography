@@ -8,13 +8,11 @@ function openTab(tabName) {
     event.currentTarget.classList.add('active');
 }
 
-function generateKey() {
-    const randomKey = Math.random().toString(36).substring(2, 10).toUpperCase();
-    document.getElementById('sym-key').value = randomKey;
-}
 
 function handleAction(type) {
     const output = document.getElementById('result-output');
+    const algorithm = document.getElementById("sym-algo").value;
+    console.log(`Thực hiện ${type} với thuật toán ${algorithm}`);
     output.innerText = "Đang xử lý...";
 
     // Ở đây bạn sẽ dùng fetch() để gửi dữ liệu lên Flask app.py
@@ -22,4 +20,26 @@ function handleAction(type) {
     setTimeout(() => {
         output.innerText = `[${type}] Thao tác thành công. (Đây là kết quả demo)`;
     }, 500);
+}
+
+async function generateKey() {
+    const output = document.getElementById('sym-key');
+    const algorithm = document.getElementById("sym-algo").value;
+    console.log(`Tạo khóa cho thuật toán ${algorithm}`);
+    output.innerText = "Đang tạo khóa...";
+
+    try {
+        const response = await fetch('/generate-key-symmetric', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ algorithm })
+        });
+        const data = await response.json();
+        output.value = data.key;
+    } catch (error) {
+        console.error('Error generating key:', error);
+        output.value = "Lỗi khi tạo khóa.";
+    }
 }
