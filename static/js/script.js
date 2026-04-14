@@ -43,3 +43,65 @@ async function generateKey() {
         output.value = "Lỗi khi tạo khóa.";
     }
 }
+
+async function encryptMessage() {
+    const output = document.getElementById('result-output');
+    const algorithm = document.getElementById("sym-algo").value;
+    const key = document.getElementById('sym-key').value;
+    const message = document.getElementById('sym-input').value;
+
+    if (!key || !message) {
+        output.innerText = "Vui lòng nhập khóa và tin nhắn!";
+        return;
+    }
+
+    try {
+        const response = await fetch('/encrypt-symmetric', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ algorithm, key, message })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            output.innerText = data.result;
+        } else {
+            output.innerText = `Lỗi: ${data.message}`;
+        }
+    } catch (error) {
+        console.error('Error encrypting message:', error);
+        output.innerText = "Lỗi khi mã hóa tin nhắn.";
+    }
+}
+
+async function decryptMessage() {
+    const output = document.getElementById('result-output');
+    const algorithm = document.getElementById("sym-algo").value;
+    const key = document.getElementById('sym-key').value;
+    const ciphertext = document.getElementById('sym-input').value;
+
+    if (!key || !ciphertext) {
+        output.innerText = "Vui lòng nhập khóa và ciphertext!";
+        return;
+    }
+
+    try {
+        const response = await fetch('/decrypt-symmetric', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ algorithm, key, ciphertext })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            output.innerText = data.result;
+        } else {
+            output.innerText = `Lỗi: ${data.message}`;
+        }
+    } catch (error) {
+        console.error('Error decrypting message:', error);
+        output.innerText = "Lỗi khi giải mã tin nhắn.";
+    }
+}

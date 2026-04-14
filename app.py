@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from generateKey import generate_key_symmetric
+from DES3 import encrypt_3des, decrypt_3des
 
 app = Flask(__name__)
 
@@ -26,20 +27,38 @@ def generate_key_symmetric_endpoint():
 
 
 #Encrypt API
-@app.route('/encrypt', methods=['POST'])
+@app.route('/encrypt-symmetric', methods=['POST'])
 def encrypt_endpoint():
     print("Received request:", request.json)
     data = request.json
-    # Logic mã hóa sẽ nằm ở đây
-    return jsonify({"status": "success", "result": "Kết quả mã hóa từ Server"})
+    
+    key = data.get("key")
+    message = data.get("message")
+    algorithm = data.get("algorithm")
+
+    try:
+        result = encrypt_3des(key, message)
+        return jsonify({"status": "success", "result": result})
+    except Exception as e:
+        print(f"Error encrypting: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 #Decrypt API
-@app.route('/decrypt', methods=['POST'])
+@app.route('/decrypt-symmetric', methods=['POST'])
 def decrypt_endpoint():
     print("Received request:", request.json)
     data = request.json
-    # Logic giải mã sẽ nằm ở đây
-    return jsonify({"status": "success", "result": "Kết quả giải mã từ Server"})
+    
+    key = data.get("key")
+    ciphertext = data.get("ciphertext")
+    algorithm = data.get("algorithm")
+
+    try:
+        result = decrypt_3des(key, ciphertext)
+        return jsonify({"status": "success", "result": result})
+    except Exception as e:
+        print(f"Error decrypting: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 if __name__ == '__main__':
