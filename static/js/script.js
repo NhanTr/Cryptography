@@ -50,11 +50,6 @@ async function encryptMessage() {
     const key = document.getElementById('sym-key').value;
     const message = document.getElementById('sym-input').value;
 
-    if (!key || !message) {
-        output.innerText = "Vui lòng nhập khóa và tin nhắn!";
-        return;
-    }
-
     try {
         const response = await fetch('/encrypt-symmetric', {
             method: 'POST',
@@ -64,11 +59,8 @@ async function encryptMessage() {
             body: JSON.stringify({ algorithm, key, message })
         });
         const data = await response.json();
-        if (response.ok) {
-            output.innerText = data.result;
-        } else {
-            output.innerText = `Lỗi: ${data.message}`;
-        }
+        console.log('Response status:', response.status, 'Response body:', data.result);
+        output.innerText = data.result;
     } catch (error) {
         console.error('Error encrypting message:', error);
         output.innerText = "Lỗi khi mã hóa tin nhắn.";
@@ -81,11 +73,6 @@ async function decryptMessage() {
     const key = document.getElementById('sym-key').value;
     const ciphertext = document.getElementById('sym-input').value;
 
-    if (!key || !ciphertext) {
-        output.innerText = "Vui lòng nhập khóa và ciphertext!";
-        return;
-    }
-
     try {
         const response = await fetch('/decrypt-symmetric', {
             method: 'POST',
@@ -95,11 +82,8 @@ async function decryptMessage() {
             body: JSON.stringify({ algorithm, key, ciphertext })
         });
         const data = await response.json();
-        if (response.ok) {
-            output.innerText = data.result;
-        } else {
-            output.innerText = `Lỗi: ${data.message}`;
-        }
+        console.log('Response status:', response.status, 'Response body:', data.result);
+        output.innerText = data.result;
     } catch (error) {
         console.error('Error decrypting message:', error);
         output.innerText = "Lỗi khi giải mã tin nhắn.";

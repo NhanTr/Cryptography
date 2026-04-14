@@ -29,7 +29,6 @@ def generate_key_symmetric_endpoint():
 #Encrypt API
 @app.route('/encrypt-symmetric', methods=['POST'])
 def encrypt_endpoint():
-    print("Received request:", request.json)
     data = request.json
     
     key = data.get("key")
@@ -37,7 +36,14 @@ def encrypt_endpoint():
     algorithm = data.get("algorithm")
 
     try:
-        result = encrypt_3des(key, message)
+        if algorithm == "3DES":
+            result = encrypt_3des(key, message)
+        elif algorithm == "AES":
+            # result = encrypt_aes(key, message)  # Placeholder cho AES
+            pass
+        elif algorithm == "DES":
+            # result = encrypt_des(key, message)  # Placeholder cho DES
+            pass
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error encrypting: {e}")
@@ -54,7 +60,16 @@ def decrypt_endpoint():
     algorithm = data.get("algorithm")
 
     try:
-        result = decrypt_3des(key, ciphertext)
+        result = None
+        if algorithm == "3DES":
+            result = decrypt_3des(key, ciphertext)
+        elif algorithm == "AES":
+            # result = decrypt_aes(key, ciphertext)  # Placeholder cho AES
+            pass
+        elif algorithm == "DES":
+            # result = decrypt_des(key, ciphertext)  # Placeholder cho DES
+            pass
+    
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error decrypting: {e}")
