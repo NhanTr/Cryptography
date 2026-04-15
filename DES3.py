@@ -1,57 +1,73 @@
-import os
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
+import binascii
+from Crypto.Cipher import DES3
+from Crypto.Random import get_random_bytes
 
-def encrypt_3des(key, message):
-    """Mã hóa 3DES với mode CBC"""
-    # key phải là 24 bytes (192 bits) cho 3DES
-    key_bytes = key.encode() if isinstance(key, str) else key
-    if len(key_bytes) < 24:
-        key_bytes = key_bytes.ljust(24, b'\x00')
-    else:
-        key_bytes = key_bytes[:24]
-    
-    iv = os.urandom(8)  # DES3 block size là 8 bytes
-    cipher = Cipher(
-        algorithms.TripleDES(key_bytes),
-        modes.CBC(iv),
-        backend=default_backend()
-    )
-    encryptor = cipher.encryptor()
-    
-    # Thêm padding
-    message_bytes = message.encode()
-    block_size = 8
-    padding_length = block_size - (len(message_bytes) % block_size)
-    padded_message = message_bytes + bytes([padding_length]) * padding_length
-    
-    ciphertext = iv + encryptor.update(padded_message) + encryptor.finalize()
-    return ciphertext.hex()
+def to_hex(byte_data):
+    return binascii.hexlify(byte_data).decode('utf-8')
 
-def decrypt_3des(key, ciphertext_hex):
-    """Giải mã 3DES với mode CBC"""
-    # key phải là 24 bytes (192 bits) cho 3DES
-    key_bytes = key.encode() if isinstance(key, str) else key
-    if len(key_bytes) < 24:
-        key_bytes = key_bytes.ljust(24, b'\x00')
-    else:
-        key_bytes = key_bytes[:24]
+def to_bytes(hex_data):
+    return binascii.unhexlify(hex_data)
+
+def generate_3des_key():
+    # 3DES cần 24 bytes (192 bits)
+    return to_hex(get_random_bytes(24))
+
+def generate_3des_iv():
+    # 3DES sử dụng khối 64 bit (8 byte)
+    return to_hex(get_random_bytes(8))
+
+
+def pad(data, block_size):
+    pad_len = block_size - (len(data) % block_size)
+    padding = bytes([pad_len] * pad_len)
+    return data + padding
+
+def encrypt_3des(plaintext, key_hex, iv_hex):
+    data_bytes = plaintext.encode('utf-8')
+
+    key = to_bytes(key_hex)
+    iv = to_bytes(iv_hex)
+
+    cipher = DES3.new(key, DES3.MODE_ECB)
+    block_size = DES3.block_size
+    padded_data = pad(data_bytes, block_size)
     
-    ciphertext = bytes.fromhex(ciphertext_hex)
-    iv = ciphertext[:8]  # Lấy IV từ phần đầu của ciphertext
-    actual_ciphertext = ciphertext[8:]
+    result = b''
+    prev_block = iv
     
-    cipher = Cipher(
-        algorithms.TripleDES(key_bytes),
-        modes.CBC(iv),
-        backend=default_backend()
-    )
-    decryptor = cipher.decryptor()
+    for i in range(0, len(padded_data), block_size):
+        block = padded_data[i : i + block_size]
+
+        xored = bytes(b1 ^ b2 for b1, b2 in zip(block, prev_block))
+        encrypted_block = cipher.encrypt(xored)
+        result += encrypted_block
+        prev_block = encrypted_block
+
+    return to_hex(result)
+
+def unpad(data):
+    pad_len = data[-1]
+    return data[:-pad_len]
+
+def decrypt_3des(ciphertext_hex, key_hex, iv_hex):
+    ciphertext = to_bytes(ciphertext_hex)  
+
+    key = to_bytes(key_hex)
+    iv = to_bytes(iv_hex)
+
+    cipher = DES3.new(key, DES3.MODE_ECB)
+    block_size = DES3.block_size
     
-    decrypted_padded = decryptor.update(actual_ciphertext) + decryptor.finalize()
+    result = b''
+    prev_block = iv
     
-    # Loại bỏ padding
-    padding_length = decrypted_padded[-1]
-    decrypted = decrypted_padded[:-padding_length]
-    
-    return decrypted.decode()
+    for i in range(0, len(ciphertext), block_size):
+        block = ciphertext[i : i + block_size]
+
+        decrypted_block = cipher.decrypt(block)
+        xored = bytes(b1 ^ b2 for b1, b2 in zip(decrypted_block, prev_block))
+        result += xored
+        prev_block = block
+
+    unpadded_result = unpad(result)
+    return unpadded_result.decode('utf-8')

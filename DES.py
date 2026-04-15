@@ -1,6 +1,4 @@
-from Crypto.Cipher.DES import block_size
 from Crypto.Cipher import DES
-from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import binascii
 

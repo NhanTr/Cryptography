@@ -1,7 +1,5 @@
-from DES import generate_des_iv
 from flask import Flask, render_template, request, jsonify
-from generateKey import generate_key_symmetric
-from DES3 import encrypt_3des, decrypt_3des
+from DES3 import *
 from DES import *
 app = Flask(__name__)
 
@@ -24,7 +22,10 @@ def generate_key_symmetric_endpoint():
     algorithm = data.get("algorithm")
 
     key = ""
-    if(algorithm == "DES"): key = generate_des_key()
+    if(algorithm == "DES"): 
+        key = generate_des_key()
+    elif(algorithm == "3DES"): 
+        key = generate_3des_key()  # 3DES cần 24 bytes (192 bits)
     print(key)
     return jsonify({"status": "success", "key": key})
 
@@ -35,8 +36,11 @@ def generate_iv_symmetric_endpoint():
     algorithm = data.get("algorithm")
 
     iv = ""
-    if(algorithm == "DES"): iv = generate_des_iv()
-    print("iv DES: ", iv)
+    if(algorithm == "DES"): 
+        iv = generate_des_iv()
+    elif(algorithm == "3DES"): 
+        iv = generate_3des_iv()
+    print("iv: ", iv)
     return jsonify({"status": "success", "iv": iv})
 
 #Encrypt API
@@ -53,7 +57,7 @@ def encrypt_endpoint():
 
     try:
         if algorithm == "3DES":
-            result = encrypt_3des(key, message)
+            result = encrypt_3des(message, key, iv)
         elif algorithm == "AES":
             # result = encrypt_aes(key, message)  # Placeholder cho AES
             pass
@@ -81,7 +85,7 @@ def decrypt_endpoint():
     try:
         result = None
         if algorithm == "3DES":
-            result = decrypt_3des(key, ciphertext)
+            result = decrypt_3des(ciphertext, key, iv)
         elif algorithm == "AES":
             # result = decrypt_aes(key, ciphertext)  # Placeholder cho AES
             pass
