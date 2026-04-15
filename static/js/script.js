@@ -86,11 +86,8 @@ async function encryptMessage() {
             body: JSON.stringify({ algorithm, key, message, iv })
         });
         const data = await response.json();
-        if (response.ok) {
-            output.innerText = data.result;
-        } else {
-            output.innerText = `Lỗi: ${data.message}`;
-        }
+        console.log('Response status:', response.status, 'Response body:', data.result);
+        output.innerText = data.result;
     } catch (error) {
         console.error('Error encrypting message:', error);
         output.innerText = "Lỗi khi mã hóa tin nhắn.";
@@ -117,11 +114,8 @@ async function decryptMessage() {
             body: JSON.stringify({ algorithm, key, ciphertext, iv})
         });
         const data = await response.json();
-        if (response.ok) {
-            output.innerText = data.result;
-        } else {
-            output.innerText = `Lỗi: ${data.message}`;
-        }
+        console.log('Response status:', response.status, 'Response body:', data.result);
+        output.innerText = data.result;
     } catch (error) {
         console.error('Error decrypting message:', error);
         output.innerText = "Lỗi khi giải mã tin nhắn.";
