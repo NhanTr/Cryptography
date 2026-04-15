@@ -37,10 +37,32 @@ async function generateKey() {
             body: JSON.stringify({ algorithm })
         });
         const data = await response.json();
+        // console.log(data.key);
         output.value = data.key;
     } catch (error) {
         console.error('Error generating key:', error);
         output.value = "Lỗi khi tạo khóa.";
+    }
+}
+async function generateIV() {
+    const output = document.getElementById('sym-iv');
+    const algorithm = document.getElementById("sym-algo").value;
+    console.log(`Tạo IV cho thuật toán ${algorithm}`);
+    output.innerText = "Đang tạo IV...";
+
+    try {
+        const response = await fetch('/generate-iv-symmetric', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ algorithm })
+        });
+        const data = await response.json();
+        output.value = data.iv;
+    } catch (error) {
+        console.error('Error generating IV:', error);
+        output.value = "Lỗi khi tạo IV.";
     }
 }
 
@@ -49,7 +71,7 @@ async function encryptMessage() {
     const algorithm = document.getElementById("sym-algo").value;
     const key = document.getElementById('sym-key').value;
     const message = document.getElementById('sym-input').value;
-
+    const iv = document.getElementById('sym-iv').value;
     if (!key || !message) {
         output.innerText = "Vui lòng nhập khóa và tin nhắn!";
         return;
@@ -61,7 +83,7 @@ async function encryptMessage() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ algorithm, key, message })
+            body: JSON.stringify({ algorithm, key, message, iv })
         });
         const data = await response.json();
         if (response.ok) {
@@ -80,7 +102,7 @@ async function decryptMessage() {
     const algorithm = document.getElementById("sym-algo").value;
     const key = document.getElementById('sym-key').value;
     const ciphertext = document.getElementById('sym-input').value;
-
+    const iv = document.getElementById('sym-iv').value;
     if (!key || !ciphertext) {
         output.innerText = "Vui lòng nhập khóa và ciphertext!";
         return;
@@ -92,7 +114,7 @@ async function decryptMessage() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ algorithm, key, ciphertext })
+            body: JSON.stringify({ algorithm, key, ciphertext, iv})
         });
         const data = await response.json();
         if (response.ok) {

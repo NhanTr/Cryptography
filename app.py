@@ -1,7 +1,8 @@
+from DES import generate_des_iv
 from flask import Flask, render_template, request, jsonify
 from generateKey import generate_key_symmetric
 from DES3 import encrypt_3des, decrypt_3des
-
+from DES import *
 app = Flask(__name__)
 
 @app.route('/')
@@ -21,10 +22,22 @@ def generate_key_symmetric_endpoint():
     print("Received request:", request.json)
     data = request.json
     algorithm = data.get("algorithm")
-    # Sinh khóa dựa trên thuật toán được chọn
-    key = generate_key_symmetric(algorithm)
+
+    key = ""
+    if(algorithm == "DES"): key = generate_des_key()
+    print(key)
     return jsonify({"status": "success", "key": key})
 
+@app.route('/generate-iv-symmetric', methods=['POST'])
+def generate_iv_symmetric_endpoint():
+    print("Received request:", request.json)
+    data = request.json
+    algorithm = data.get("algorithm")
+
+    iv = ""
+    if(algorithm == "DES"): iv = generate_des_iv()
+    print("iv DES: ", iv)
+    return jsonify({"status": "success", "iv": iv})
 
 #Encrypt API
 @app.route('/encrypt-symmetric', methods=['POST'])
@@ -34,10 +47,14 @@ def encrypt_endpoint():
     
     key = data.get("key")
     message = data.get("message")
+    iv = data.get("iv")
     algorithm = data.get("algorithm")
+    result = ""
+    
 
     try:
-        result = encrypt_3des(key, message)
+        if(algorithm == "DES"): result = encrypt_des(message, key, iv)
+        elif(algorithm == "DES3"): result = encrypt_3des(key, message)
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error encrypting: {e}")
@@ -52,9 +69,13 @@ def decrypt_endpoint():
     key = data.get("key")
     ciphertext = data.get("ciphertext")
     algorithm = data.get("algorithm")
-
+    iv = data.get("iv")
+    result = ""
+    
+    print(ciphertext, key, iv)
     try:
-        result = decrypt_3des(key, ciphertext)
+        if(algorithm == "DES"): result = decrypt_des(ciphertext, key, iv)
+        elif(algorithm == "DES3"): result = decrypt_3des(key, ciphertext)
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error decrypting: {e}")
