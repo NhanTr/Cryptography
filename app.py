@@ -1,7 +1,8 @@
+from DES import generate_des_iv
 from flask import Flask, render_template, request, jsonify
 from generateKey import generate_key_symmetric
 from DES3 import encrypt_3des, decrypt_3des
-
+from DES import *
 app = Flask(__name__)
 
 @app.route('/')
@@ -21,10 +22,22 @@ def generate_key_symmetric_endpoint():
     print("Received request:", request.json)
     data = request.json
     algorithm = data.get("algorithm")
-    # Sinh khóa dựa trên thuật toán được chọn
-    key = generate_key_symmetric(algorithm)
+
+    key = ""
+    if(algorithm == "DES"): key = generate_des_key()
+    print(key)
     return jsonify({"status": "success", "key": key})
 
+@app.route('/generate-iv-symmetric', methods=['POST'])
+def generate_iv_symmetric_endpoint():
+    print("Received request:", request.json)
+    data = request.json
+    algorithm = data.get("algorithm")
+
+    iv = ""
+    if(algorithm == "DES"): iv = generate_des_iv()
+    print("iv DES: ", iv)
+    return jsonify({"status": "success", "iv": iv})
 
 #Encrypt API
 @app.route('/encrypt-symmetric', methods=['POST'])
@@ -33,7 +46,10 @@ def encrypt_endpoint():
     
     key = data.get("key")
     message = data.get("message")
+    iv = data.get("iv")
     algorithm = data.get("algorithm")
+    result = ""
+    
 
     try:
         if algorithm == "3DES":
@@ -42,7 +58,7 @@ def encrypt_endpoint():
             # result = encrypt_aes(key, message)  # Placeholder cho AES
             pass
         elif algorithm == "DES":
-            # result = encrypt_des(key, message)  # Placeholder cho DES
+            result = encrypt_des(message, key, iv)
             pass
         return jsonify({"status": "success", "result": result})
     except Exception as e:
@@ -58,7 +74,10 @@ def decrypt_endpoint():
     key = data.get("key")
     ciphertext = data.get("ciphertext")
     algorithm = data.get("algorithm")
-
+    iv = data.get("iv")
+    result = ""
+    
+    print(ciphertext, key, iv)
     try:
         result = None
         if algorithm == "3DES":
@@ -67,7 +86,7 @@ def decrypt_endpoint():
             # result = decrypt_aes(key, ciphertext)  # Placeholder cho AES
             pass
         elif algorithm == "DES":
-            # result = decrypt_des(key, ciphertext)  # Placeholder cho DES
+            result = decrypt_des(ciphertext, key, iv)
             pass
     
         return jsonify({"status": "success", "result": result})
