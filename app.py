@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from DES3 import *
 from DES import *
+from hash_functions import hash_md5, hash_sha256
 app = Flask(__name__)
 
 @app.route('/')
@@ -96,6 +97,27 @@ def decrypt_endpoint():
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error decrypting: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# Hash API - Tính giá trị hash cho chuỗi văn bản
+@app.route('/hash', methods=['POST'])
+def hash_endpoint():
+    data = request.json
+    text = data.get("text", "")
+    algorithm = data.get("algorithm", "MD5")
+
+    try:
+        if algorithm == "MD5":
+            result = hash_md5(text)
+        elif algorithm == "SHA-256":
+            result = hash_sha256(text)
+        else:
+            return jsonify({"status": "error", "message": "Thuật toán không được hỗ trợ"}), 400
+
+        return jsonify({"status": "success", "result": result})
+    except Exception as e:
+        print(f"Error hashing: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
