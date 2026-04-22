@@ -56,12 +56,41 @@
 
         <div id="hash" class="tab-content">
             <h3>Hàm Băm (Hash)</h3>
+            <p class="hash-description">Chọn thuật toán và nhập chuỗi văn bản để tính giá trị hash (digest).</p>
+            
             <select id="hash-algo">
-                <option value="MD5">MD5</option>
-                <option value="SHA-256">SHA-256</option>
+                <option value="MD5">MD5 (128-bit)</option>
+                <option value="SHA-256">SHA-256 (256-bit)</option>
             </select>
-            <textarea id="hash-input" placeholder="Nhập chuỗi văn bản..."></textarea>
-            <button class="btn-hash" onclick="handleAction('hash')">Calculate Digest</button>
+            
+            <textarea id="hash-input" placeholder="Nhập chuỗi văn bản cần hash..."></textarea>
+            
+            <div class="hash-actions">
+                <button class="btn-hash" onclick="performHash()">🔒 Calculate Digest</button>
+                <button class="btn-compare" onclick="compareHash()">🔄 So sánh MD5 & SHA-256</button>
+                <button class="btn-clear" onclick="clearHash()">🗑️ Xóa / Thử lại</button>
+            </div>
+
+            <div id="hash-result-area" class="hash-result-area" style="display: none;">
+                <h4>Kết quả Hash:</h4>
+                <div id="hash-result" class="output-box hash-output"></div>
+                <button class="btn-copy" onclick="copyHashResult()">📋 Copy kết quả</button>
+                <span id="copy-notification" class="copy-notification" style="display: none;">✅ Đã copy!</span>
+            </div>
+
+            <div id="hash-compare-area" class="hash-compare-area" style="display: none;">
+                <h4>So sánh MD5 vs SHA-256:</h4>
+                <div class="compare-grid">
+                    <div class="compare-item">
+                        <label>MD5 (32 ký tự):</label>
+                        <div id="compare-md5" class="output-box hash-output"></div>
+                    </div>
+                    <div class="compare-item">
+                        <label>SHA-256 (64 ký tự):</label>
+                        <div id="compare-sha256" class="output-box hash-output"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <hr>
