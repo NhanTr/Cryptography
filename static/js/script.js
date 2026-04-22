@@ -230,3 +230,23 @@ async function compareHash() {
         sha256Box.innerText = '❌ Lỗi kết nối server.';
     }
 }
+
+/**
+ * Xóa toàn bộ input và kết quả hash - chức năng "Thử lại"
+ * Reset form về trạng thái ban đầu
+ */
+function clearHash() {
+    // Xóa input
+    document.getElementById('hash-input').value = '';
+    document.getElementById('hash-algo').selectedIndex = 0;
+
+    // Ẩn kết quả
+    document.getElementById('hash-result-area').style.display = 'none';
+    document.getElementById('hash-compare-area').style.display = 'none';
+
+    // Xóa nội dung kết quả
+    document.getElementById('hash-result').innerText = '';
+    document.getElementById('compare-md5').innerText = '';
+    document.getElementById('compare-sha256').innerText = '';
+    document.getElementById('copy-notification').style.display = 'none';
+}
