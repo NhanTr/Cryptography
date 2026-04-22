@@ -164,3 +164,24 @@ async function performHash() {
         resultBox.innerText = '❌ Lỗi kết nối server.';
     }
 }
+
+/**
+ * Copy kết quả hash vào clipboard
+ * Hiển thị thông báo "Đã copy!" trong 2 giây
+ */
+function copyHashResult() {
+    const result = document.getElementById('hash-result').innerText;
+    if (!result || result.startsWith('⚠️') || result.startsWith('❌')) {
+        return;
+    }
+
+    navigator.clipboard.writeText(result).then(() => {
+        const notification = document.getElementById('copy-notification');
+        notification.style.display = 'inline';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+    });
+}
