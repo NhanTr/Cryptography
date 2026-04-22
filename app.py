@@ -104,8 +104,14 @@ def decrypt_endpoint():
 @app.route('/hash', methods=['POST'])
 def hash_endpoint():
     data = request.json
-    text = data.get("text", "")
+    if not data:
+        return jsonify({"status": "error", "message": "Không nhận được dữ liệu"}), 400
+
+    text = data.get("text")
     algorithm = data.get("algorithm", "MD5")
+
+    if text is None:
+        return jsonify({"status": "error", "message": "Vui lòng nhập chuỗi văn bản"}), 400
 
     try:
         if algorithm == "MD5":
@@ -125,7 +131,13 @@ def hash_endpoint():
 @app.route('/hash-all', methods=['POST'])
 def hash_all_endpoint():
     data = request.json
-    text = data.get("text", "")
+    if not data:
+        return jsonify({"status": "error", "message": "Không nhận được dữ liệu"}), 400
+
+    text = data.get("text")
+
+    if text is None:
+        return jsonify({"status": "error", "message": "Vui lòng nhập chuỗi văn bản"}), 400
 
     try:
         result = hash_all(text)
