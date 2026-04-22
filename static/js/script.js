@@ -185,3 +185,48 @@ function copyHashResult() {
         console.error('Failed to copy:', err);
     });
 }
+
+/**
+ * So sánh kết quả hash MD5 và SHA-256 cùng lúc
+ * Gọi API /hash-all để tính cả hai thuật toán đồng thời
+ */
+async function compareHash() {
+    const text = document.getElementById('hash-input').value;
+    const resultArea = document.getElementById('hash-result-area');
+    const compareArea = document.getElementById('hash-compare-area');
+    const md5Box = document.getElementById('compare-md5');
+    const sha256Box = document.getElementById('compare-sha256');
+
+    if (!text) {
+        resultArea.style.display = 'block';
+        document.getElementById('hash-result').innerText = '⚠️ Vui lòng nhập chuỗi văn bản!';
+        compareArea.style.display = 'none';
+        return;
+    }
+
+    resultArea.style.display = 'none';
+    compareArea.style.display = 'block';
+    md5Box.innerText = 'Đang tính toán...';
+    sha256Box.innerText = 'Đang tính toán...';
+
+    try {
+        const response = await fetch('/hash-all', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text })
+        });
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            md5Box.innerText = data.result.md5;
+            sha256Box.innerText = data.result.sha256;
+        } else {
+            md5Box.innerText = '❌ Lỗi: ' + data.message;
+            sha256Box.innerText = '❌ Lỗi: ' + data.message;
+        }
+    } catch (error) {
+        console.error('Error comparing hash:', error);
+        md5Box.innerText = '❌ Lỗi kết nối server.';
+        sha256Box.innerText = '❌ Lỗi kết nối server.';
+    }
+}
