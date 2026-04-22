@@ -32,3 +32,23 @@ def hash_sha256(text):
     trong các ứng dụng bảo mật hiện đại.
     """
     return hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+
+def hash_all(text):
+    """Tính cả MD5 và SHA-256 để so sánh kết quả.
+    
+    Hàm này giúp người dùng thấy được sự khác biệt về độ dài output
+    giữa MD5 (128-bit) và SHA-256 (256-bit), phục vụ mục đích giáo dục.
+    
+    Returns:
+        dict: Chứa hash MD5, SHA-256 và độ dài tương ứng
+    """
+    validate_input(text)
+    md5_result = hash_md5(text)
+    sha256_result = hash_sha256(text)
+    return {
+        "md5": md5_result,
+        "sha256": sha256_result,
+        "md5_length": len(md5_result),        # 32 ký tự (128 bits)
+        "sha256_length": len(sha256_result)    # 64 ký tự (256 bits)
+    }
