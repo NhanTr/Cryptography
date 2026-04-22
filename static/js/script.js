@@ -121,3 +121,46 @@ async function decryptMessage() {
         output.innerText = "Lỗi khi giải mã tin nhắn.";
     }
 }
+
+// ========== HASH FUNCTIONS ==========
+
+/**
+ * Tính giá trị hash cho chuỗi văn bản
+ * Gọi API /hash với thuật toán được chọn (MD5 hoặc SHA-256)
+ */
+async function performHash() {
+    const text = document.getElementById('hash-input').value;
+    const algorithm = document.getElementById('hash-algo').value;
+    const resultArea = document.getElementById('hash-result-area');
+    const resultBox = document.getElementById('hash-result');
+    const compareArea = document.getElementById('hash-compare-area');
+
+    if (!text) {
+        resultArea.style.display = 'block';
+        resultBox.innerText = '⚠️ Vui lòng nhập chuỗi văn bản!';
+        compareArea.style.display = 'none';
+        return;
+    }
+
+    resultBox.innerText = 'Đang tính toán...';
+    resultArea.style.display = 'block';
+    compareArea.style.display = 'none';
+
+    try {
+        const response = await fetch('/hash', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, algorithm })
+        });
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            resultBox.innerText = data.result;
+        } else {
+            resultBox.innerText = '❌ Lỗi: ' + data.message;
+        }
+    } catch (error) {
+        console.error('Error hashing:', error);
+        resultBox.innerText = '❌ Lỗi kết nối server.';
+    }
+}
