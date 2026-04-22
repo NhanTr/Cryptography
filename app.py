@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from DES3 import *
 from DES import *
-from hash_functions import hash_md5, hash_sha256
+from hash_functions import hash_md5, hash_sha256, hash_all
 app = Flask(__name__)
 
 @app.route('/')
@@ -115,6 +115,20 @@ def hash_endpoint():
         else:
             return jsonify({"status": "error", "message": "Thuật toán không được hỗ trợ"}), 400
 
+        return jsonify({"status": "success", "result": result})
+    except Exception as e:
+        print(f"Error hashing: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# Hash All API - Tính cả MD5 và SHA-256 cùng lúc để so sánh
+@app.route('/hash-all', methods=['POST'])
+def hash_all_endpoint():
+    data = request.json
+    text = data.get("text", "")
+
+    try:
+        result = hash_all(text)
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error hashing: {e}")
