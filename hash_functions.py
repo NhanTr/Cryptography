@@ -1,6 +1,19 @@
 import hashlib
 
 
+def validate_input(text):
+    """Kiểm tra đầu vào có hợp lệ hay không.
+    
+    Raises:
+        ValueError: Nếu đầu vào là None
+        TypeError: Nếu đầu vào không phải chuỗi
+    """
+    if text is None:
+        raise ValueError("Input text cannot be None")
+    if not isinstance(text, str):
+        raise TypeError("Input must be a string")
+    return True
+
 def hash_md5(text):
     """Tính hash MD5 của chuỗi văn bản đầu vào.
     
