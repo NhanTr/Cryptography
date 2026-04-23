@@ -20,7 +20,10 @@ def hash_md5(text):
     MD5 tạo ra giá trị hash 128-bit (32 ký tự hex).
     Lưu ý: MD5 hiện không còn an toàn cho mục đích bảo mật,
     chỉ sử dụng cho mục đích học tập.
+    
+    Hỗ trợ: chuỗi rỗng, ký tự đặc biệt, Unicode (tiếng Việt)
     """
+    validate_input(text)
     return hashlib.md5(text.encode('utf-8')).hexdigest()
 
 
@@ -30,7 +33,10 @@ def hash_sha256(text):
     SHA-256 tạo ra giá trị hash 256-bit (64 ký tự hex).
     SHA-256 là thuật toán hash an toàn, được sử dụng rộng rãi
     trong các ứng dụng bảo mật hiện đại.
+    
+    Hỗ trợ: chuỗi rỗng, ký tự đặc biệt, Unicode (tiếng Việt)
     """
+    validate_input(text)
     return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 
