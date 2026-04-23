@@ -15,8 +15,9 @@ Ghi chú bảo mật (Security Notes):
     - Cả hai đều được đưa vào project này cho MỤC ĐÍCH HỌC TẬP,
       để so sánh cấu trúc và độ dài output.
 
-Tác giả phần này: [Thành viên 5]
+Tác giả phần này: Thành viên 5 - Hash Functions (MD5, SHA-256)
 Thư viện sử dụng: hashlib (thư viện chuẩn Python, không cần cài thêm)
+Ngày hoàn thành: 04/2026
 """
 import hashlib
 
