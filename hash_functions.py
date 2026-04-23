@@ -1,3 +1,23 @@
+"""
+hash_functions.py - Module xử lý hàm băm (Hash Functions)
+==========================================================
+Cung cấp các hàm tính giá trị hash sử dụng thư viện hashlib chuẩn của Python.
+
+Thuật toán được hỗ trợ:
+    - MD5     : Message Digest 5 - output 128-bit (32 ký tự hex)
+    - SHA-256 : Secure Hash Algorithm 256 - output 256-bit (64 ký tự hex)
+
+Ghi chú bảo mật (Security Notes):
+    - MD5 hiện được coi là KHÔNG AN TOÀN cho mục đích xác thực mật khẩu
+      hoặc chữ ký số vì dễ bị tấn công collision.
+    - SHA-256 là thuật toán an toàn, được khuyến nghị sử dụng trong
+      các ứng dụng bảo mật hiện đại.
+    - Cả hai đều được đưa vào project này cho MỤC ĐÍCH HỌC TẬP,
+      để so sánh cấu trúc và độ dài output.
+
+Tác giả phần này: [Thành viên 5]
+Thư viện sử dụng: hashlib (thư viện chuẩn Python, không cần cài thêm)
+"""
 import hashlib
 
 
