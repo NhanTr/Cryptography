@@ -15,3 +15,23 @@ button { padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; 
 .btn-enc { background: #27ae60; color: white; }
 .btn-dec { background: #e67e22; color: white; }
 .output-box { background: #eef2f3; padding: 15px; border-radius: 8px; word-break: break-all; min-height: 40px; border: 1px dashed #bdc3c7; }
+
+/* ===== HASH SECTION STYLES ===== */
+.hash-description { color: #7f8c8d; font-size: 0.9em; margin: 0; }
+.hash-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-hash { background: #8e44ad; color: white; }
+.btn-hash:hover { background: #7d3c98; }
+.btn-compare { background: #2980b9; color: white; }
+.btn-compare:hover { background: #2471a3; }
+.btn-clear { background: #95a5a6; color: white; }
+.btn-clear:hover { background: #7f8c8d; }
+.btn-copy { background: #1abc9c; color: white; margin-top: 8px; }
+.btn-copy:hover { background: #17a589; }
+.hash-result-area { display: flex; flex-direction: column; gap: 8px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #8e44ad; }
+.hash-result-area h4 { margin: 0; color: #8e44ad; }
+.hash-output { font-family: 'Courier New', monospace; font-size: 0.85em; letter-spacing: 0.5px; color: #2c3e50; }
+.hash-compare-area { display: flex; flex-direction: column; gap: 10px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #2980b9; }
+.hash-compare-area h4 { margin: 0; color: #2980b9; }
+.compare-grid { display: flex; flex-direction: column; gap: 12px; }
+.compare-item label { font-weight: bold; color: #555; font-size: 0.9em; display: block; margin-bottom: 5px; }
+.copy-notification { color: #27ae60; font-weight: bold; margin-left: 10px; font-size: 0.9em; }
