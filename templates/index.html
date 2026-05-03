@@ -1,105 +1,145 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Cryptography Toolkit</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
     <div class="container">
-        <h1>🔐 Cryptography Toolkit</h1>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('symmetric')">Symmetric</button>
-            <button class="tab-btn" onclick="openTab('asymmetric')">Asymmetric (RSA)</button>
-            <button class="tab-btn" onclick="openTab('hash')">Hash Functions</button>
+      <h1>🔐 Cryptography Toolkit</h1>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('symmetric')">
+          Symmetric
+        </button>
+        <button class="tab-btn" onclick="openTab('asymmetric')">
+          Asymmetric (RSA)
+        </button>
+        <button class="tab-btn" onclick="openTab('hash')">
+          Hash Functions
+        </button>
+      </div>
+
+      <div id="symmetric" class="tab-content active">
+        <h3>Mã hóa Đối xứng</h3>
+        <select id="sym-algo">
+          <option value="AES">AES</option>
+          <option value="DES">DES</option>
+          <option value="3DES">3DES</option>
+        </select>
+        <textarea
+          id="sym-input"
+          placeholder="Nhập Plaintext hoặc Ciphertext..."
+        ></textarea>
+
+        <div class="key-group">
+          <input type="text" id="sym-key" placeholder="Nhập Secret Key" />
+          <button onclick="generateKey()">Auto-generate</button>
         </div>
 
-        <div id="symmetric" class="tab-content active">
-            <h3>Mã hóa Đối xứng</h3>
-            <select id="sym-algo">
-                <option value="AES">AES</option>
-                <option value="DES">DES</option>
-                <option value="3DES">3DES</option>
-            </select>
-            <textarea id="sym-input" placeholder="Nhập Plaintext hoặc Ciphertext..."></textarea>
-            
-            <div class="key-group">
-                <input type="text" id="sym-key" placeholder="Nhập Secret Key">
-                <button onclick="generateKey()">Auto-generate</button>
-            </div>
-
-            <div class="iv-group">
-                <input type="text" id="sym-iv" placeholder="Nhập IV">
-                <button onclick="generateIV()">Auto-generate</button>
-            </div>
-
-            <div class="actions">
-                <button class="btn-enc" onclick="encryptMessage()">Encrypt</button>
-                <button class="btn-dec" onclick="decryptMessage()">Decrypt</button>
-            </div>
+        <div class="iv-group">
+          <input type="text" id="sym-iv" placeholder="Nhập IV" />
+          <button onclick="generateIV()">Auto-generate</button>
         </div>
 
-        <div id="asymmetric" class="tab-content">
-            <h3>Mã hóa Bất đối xứng (RSA)</h3>
-            <button class="btn-gen" onclick="handleAction('gen-rsa')">Generate Key Pair</button>
-            <div class="key-display">
-                <textarea id="pub-key" placeholder="Public Key" readonly></textarea>
-                <textarea id="priv-key" placeholder="Private Key" readonly></textarea>
-            </div>
-            <textarea id="asym-input" placeholder="Nhập dữ liệu..."></textarea>
-            <div class="actions">
-                <button class="btn-enc" onclick="handleAction('encrypt-asym')">Encrypt</button>
-                <button class="btn-dec" onclick="handleAction('decrypt-asym')">Decrypt</button>
-            </div>
+        <div class="actions">
+          <button class="btn-enc" onclick="encryptMessage()">Encrypt</button>
+          <button class="btn-dec" onclick="decryptMessage()">Decrypt</button>
+        </div>
+      </div>
+
+      <div id="asymmetric" class="tab-content">
+        <h3>Mã hóa Bất đối xứng (RSA)</h3>
+        <button class="btn-gen" onclick="generateRSAKeys()">
+          Generate Key Pair
+        </button>
+        <div class="key-display">
+          <textarea id="pub-key" placeholder="Public Key" readonly></textarea>
+          <textarea id="priv-key" placeholder="Private Key" readonly></textarea>
+        </div>
+        <textarea id="asym-input" placeholder="Nhập dữ liệu..."></textarea>
+        <div class="actions">
+          <button class="btn-enc" onclick="encryptRSA()">Encrypt</button>
+          <button class="btn-dec" onclick="decryptRSA()">Decrypt</button>
+        </div>
+      </div>
+
+      <div id="hash" class="tab-content">
+        <h3>Hàm Băm (Hash)</h3>
+        <p class="hash-description">
+          Chọn thuật toán và nhập chuỗi văn bản để tính giá trị hash (digest).
+        </p>
+
+        <select id="hash-algo">
+          <option value="MD5">MD5 (128-bit)</option>
+          <option value="SHA-256">SHA-256 (256-bit)</option>
+        </select>
+
+        <textarea
+          id="hash-input"
+          placeholder="Nhập chuỗi văn bản cần hash..."
+        ></textarea>
+
+        <div class="hash-actions">
+          <button class="btn-hash" onclick="performHash()">
+            🔒 Calculate Digest
+          </button>
+          <button class="btn-compare" onclick="compareHash()">
+            🔄 So sánh MD5 & SHA-256
+          </button>
+          <button class="btn-clear" onclick="clearHash()">
+            🗑️ Xóa / Thử lại
+          </button>
         </div>
 
-        <div id="hash" class="tab-content">
-            <h3>Hàm Băm (Hash)</h3>
-            <p class="hash-description">Chọn thuật toán và nhập chuỗi văn bản để tính giá trị hash (digest).</p>
-            
-            <select id="hash-algo">
-                <option value="MD5">MD5 (128-bit)</option>
-                <option value="SHA-256">SHA-256 (256-bit)</option>
-            </select>
-            
-            <textarea id="hash-input" placeholder="Nhập chuỗi văn bản cần hash..."></textarea>
-            
-            <div class="hash-actions">
-                <button class="btn-hash" onclick="performHash()">🔒 Calculate Digest</button>
-                <button class="btn-compare" onclick="compareHash()">🔄 So sánh MD5 & SHA-256</button>
-                <button class="btn-clear" onclick="clearHash()">🗑️ Xóa / Thử lại</button>
-            </div>
-
-            <div id="hash-result-area" class="hash-result-area" style="display: none;">
-                <h4>Kết quả Hash:</h4>
-                <div id="hash-result" class="output-box hash-output"></div>
-                <button class="btn-copy" onclick="copyHashResult()">📋 Copy kết quả</button>
-                <span id="copy-notification" class="copy-notification" style="display: none;">✅ Đã copy!</span>
-            </div>
-
-            <div id="hash-compare-area" class="hash-compare-area" style="display: none;">
-                <h4>So sánh MD5 vs SHA-256:</h4>
-                <div class="compare-grid">
-                    <div class="compare-item">
-                        <label>MD5 (32 ký tự):</label>
-                        <div id="compare-md5" class="output-box hash-output"></div>
-                    </div>
-                    <div class="compare-item">
-                        <label>SHA-256 (64 ký tự):</label>
-                        <div id="compare-sha256" class="output-box hash-output"></div>
-                    </div>
-                </div>
-            </div>
+        <div
+          id="hash-result-area"
+          class="hash-result-area"
+          style="display: none"
+        >
+          <h4>Kết quả Hash:</h4>
+          <div id="hash-result" class="output-box hash-output"></div>
+          <button class="btn-copy" onclick="copyHashResult()">
+            📋 Copy kết quả
+          </button>
+          <span
+            id="copy-notification"
+            class="copy-notification"
+            style="display: none"
+            >✅ Đã copy!</span
+          >
         </div>
 
-        <hr>
-        <div class="result-area">
-            <h4>Kết quả:</h4>
-            <div id="result-output" class="output-box">...</div>
+        <div
+          id="hash-compare-area"
+          class="hash-compare-area"
+          style="display: none"
+        >
+          <h4>So sánh MD5 vs SHA-256:</h4>
+          <div class="compare-grid">
+            <div class="compare-item">
+              <label>MD5 (32 ký tự):</label>
+              <div id="compare-md5" class="output-box hash-output"></div>
+            </div>
+            <div class="compare-item">
+              <label>SHA-256 (64 ký tự):</label>
+              <div id="compare-sha256" class="output-box hash-output"></div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <hr />
+      <div class="result-area">
+        <h4>Kết quả:</h4>
+        <div id="result-output" class="output-box">...</div>
+      </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
+  </body>
 </html>
