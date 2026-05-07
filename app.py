@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from AES import *
 from DES3 import *
 from DES import *
 from hash_functions import hash_md5, hash_sha256, hash_all
@@ -23,6 +24,8 @@ def generate_key_symmetric_endpoint():
     algorithm = data.get("algorithm")
 
     key = ""
+    if(algorithm == "AES"):
+        key = generate_aes_key()
     if(algorithm == "DES"): 
         key = generate_des_key()
     elif(algorithm == "3DES"): 
@@ -37,6 +40,8 @@ def generate_iv_symmetric_endpoint():
     algorithm = data.get("algorithm")
 
     iv = ""
+    if(algorithm == "AES"):
+        iv = generate_aes_iv()
     if(algorithm == "DES"): 
         iv = generate_des_iv()
     elif(algorithm == "3DES"): 
@@ -60,11 +65,9 @@ def encrypt_endpoint():
         if algorithm == "3DES":
             result = encrypt_3des(message, key, iv)
         elif algorithm == "AES":
-            # result = encrypt_aes(key, message)  # Placeholder cho AES
-            pass
+            result = encrypt_aes(message, key, iv)
         elif algorithm == "DES":
             result = encrypt_des(message, key, iv)
-            pass
         return jsonify({"status": "success", "result": result})
     except Exception as e:
         print(f"Error encrypting: {e}")
@@ -88,11 +91,9 @@ def decrypt_endpoint():
         if algorithm == "3DES":
             result = decrypt_3des(ciphertext, key, iv)
         elif algorithm == "AES":
-            # result = decrypt_aes(key, ciphertext)  # Placeholder cho AES
-            pass
+            result = decrypt_aes(ciphertext, key, iv)
         elif algorithm == "DES":
             result = decrypt_des(ciphertext, key, iv)
-            pass
     
         return jsonify({"status": "success", "result": result})
     except Exception as e:
